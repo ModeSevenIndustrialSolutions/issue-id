@@ -29,7 +29,7 @@ runs:
   steps:
     # No need to checkout repository, performed by first action below
     - name: "GIT commit message body"
-      uses: os-climate/osc-github-devops/.github/actions/git-commit-message@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message@main
 
     - name: "Check commit message for required string"
       id: check
@@ -59,14 +59,14 @@ runs:
 
     - name: "Get Issue-ID from JSON lookup table"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: os-climate/osc-github-devops/.github/actions/json-var-key-value-lookup@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/json-var-key-value-lookup@main
       with:
         json: ${{ inputs.issue_id_lookup_json }}
         key: ${{ env.key }}
 
     - name: "Configure GIT user for commit"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: os-climate/osc-github-devops/.github/actions/git-configure@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure@main
 
     - name: "Injecting Issue-ID into body of first commit message"
       id: inject
