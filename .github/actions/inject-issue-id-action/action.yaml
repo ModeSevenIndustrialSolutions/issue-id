@@ -45,7 +45,7 @@ runs:
           echo "PRESENT=true" >> "$GITHUB_ENV"
           echo "PRESENT=true" >> "$GITHUB_OUTPUT"
         else
-          echo "Issue-ID was NOT found in the pull request ❌"
+          echo "Issue-ID was NOT found in the pull request 💬"
           echo "PRESENT=false" >> "$GITHUB_ENV"
           echo "PRESENT=false" >> "$GITHUB_OUTPUT"
         fi
@@ -78,7 +78,7 @@ runs:
       run: |
         # Injecting Issue-ID into body of first commit
 
-        git commit --amend -m"${{ inputs.COMMIT_MESSAGE_BODY }}" -m"Issue-ID: ${{ env.value }}" --no-verify --no-edit
+        git commit --amend -m "${{ inputs.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
         echo "Force push temporarily disabled ⚠️"
         # git push --force
         echo "present=true" >> "$GITHUB_OUTPUT"
