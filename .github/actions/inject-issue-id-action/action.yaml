@@ -80,7 +80,7 @@ runs:
       shell: bash
       run: |
         # Adding JIRA ticket reference to commit message
-        git commit --amend -m "${{ inputs.COMMIT_MESSAGE_BODY }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
+        git commit --amend -m "${{ env.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
         echo "Performing force push on pull request ⚠️"
         git push --force
         echo "present=true" >> "$GITHUB_ENV"
