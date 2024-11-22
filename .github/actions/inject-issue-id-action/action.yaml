@@ -52,6 +52,11 @@ runs:
           echo "PRESENT=false" >> "$GITHUB_ENV"
         fi
 
+    - name: "Get repository default GIT branch"
+      if: env.PRESENT == 'false' && inputs.INJECT == 'true'
+      # yamllint disable-line rule:line-length
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-default-branch@main
+
     - name: "Set key to use for JSON lookup"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       shell: bash
