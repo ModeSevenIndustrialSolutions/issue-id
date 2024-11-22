@@ -36,14 +36,18 @@ runs:
       shell: bash
       run: |
         # Check commit message for ticket/string
+        echo "# Checking Commit Message for JIRA Ticket" >> "$GITHUB_STEP_SUMMARY"
+
         COMMIT_MESSAGE="${{ env.COMMIT_MESSAGE }}"
         if [ -z "$COMMIT_MESSAGE" ]; then
           echo "Commit message body was empty/unpopulated ❌"; exit 1
         fi
         if [[ "$COMMIT_MESSAGE" =~ "Issue-ID: " ]]; then
+          echo "Ticket string found in the pull request ✅" >> "$GITHUB_STEP_SUMMARY"
           echo "Ticket string found in the pull request ✅"
           echo "PRESENT=true" >> "$GITHUB_ENV"
         else
+          echo "Ticket string NOT found in the pull request 💬" >> "$GITHUB_STEP_SUMMARY"
           echo "Ticket string NOT found in the pull request 💬"
           echo "PRESENT=false" >> "$GITHUB_ENV"
         fi
@@ -81,7 +85,7 @@ runs:
         git push --force
         echo "present=true" >> "$GITHUB_ENV"
         echo "Added JIRA ticket reference: ${{ env.value }} 🎟️"
-        echo "🎟️ Added JIRA ticket reference: ${{ env.value }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "# 🎟️ Added JIRA ticket reference: ${{ env.value }}" >> "$GITHUB_STEP_SUMMARY"
 
     - name: "Set status/outputs"
       id: output
