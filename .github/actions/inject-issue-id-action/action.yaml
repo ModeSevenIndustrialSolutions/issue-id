@@ -37,12 +37,15 @@ runs:
       run: |
         # Check commit message for required string
         COMMIT_MESSAGE="${{ env.COMMIT_MESSAGE_BODY }}"
+        if [ -z "$COMMIT_MESSAGE" ]; then
+          echo "Commit message body was empty/unpopulated ❌"; exit 1
+        fi
         if [[ "$COMMIT_MESSAGE" =~ "Issue-ID: " ]]; then
-          echo "✅ Issue-ID was found in the pull request"
+          echo "Issue-ID was found in the pull request ✅"
           echo "PRESENT=true" >> "$GITHUB_ENV"
           echo "PRESENT=true" >> "$GITHUB_OUTPUT"
         else
-          echo "❌ Issue-ID was NOT found in the pull request"
+          echo "Issue-ID was NOT found in the pull request ❌"
           echo "PRESENT=false" >> "$GITHUB_ENV"
           echo "PRESENT=false" >> "$GITHUB_OUTPUT"
         fi
@@ -74,6 +77,8 @@ runs:
       shell: bash
       run: |
         # Injecting Issue-ID into body of first commit
+
         git commit --amend -m"${{ inputs.COMMIT_MESSAGE_BODY }}" -m"Issue-ID: ${{ env.value }}" --no-verify --no-edit
-        git push --force
+        echo "Force push temporarily disabled ⚠️"
+        # git push --force
         echo "present=true" >> "$GITHUB_OUTPUT"

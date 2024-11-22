@@ -24,16 +24,21 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v4
-      #with:
-      #  ref: ${{ inputs.REF }}
-      #  fetch-depth: ${{ inputs.FETCH_DEPTH }}
+      with:
+        ref: ${{ inputs.REF }}
+        fetch-depth: ${{ inputs.FETCH_DEPTH }}
 
-    - name: "GIT commit message"
+    - name: "Retrieve GIT commit message"
       id: return
       shell: bash
       run: |
-        # GIT commit message
+        # Retrieve GIT commit message
+        using "Pulled repository with ref: ${{ inputs.REF }} and depth ${{ inputs.FETCH_DEPTH }}"
         COMMIT_MESSAGE=$(git show -s --format='%B')
+        if [ -z "$COMMIT_MESSAGE" ]; then
+          echo "GIT Commit Message string was empty ❌" >> "$GITHUB_STEP_SUMMARY"
+          echo "GIT Commit Message string was empty ❌"; exit 1
+        fi
         echo "COMMIT_MESSAGE<<EOF"$'\n'"$COMMIT_MESSAGE"$'\n'EOF >> "$GITHUB_ENV"
         echo "COMMIT_MESSAGE<<EOF"$'\n'"$COMMIT_MESSAGE"$'\n'EOF >> "$GITHUB_OUTPUT"
         echo "💬 GIT Commit Message"
