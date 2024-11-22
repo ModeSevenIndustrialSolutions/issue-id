@@ -33,7 +33,6 @@ runs:
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message@main
 
     - name: "Check commit message for ticket/string"
-      id: check
       shell: bash
       run: |
         # Check commit message for ticket/string
@@ -44,11 +43,9 @@ runs:
         if [[ "$COMMIT_MESSAGE" =~ "Issue-ID: " ]]; then
           echo "Ticket string found in the pull request ✅"
           echo "PRESENT=true" >> "$GITHUB_ENV"
-          echo "PRESENT=true" >> "$GITHUB_OUTPUT"
         else
           echo "Ticket string NOT found in the pull request 💬"
           echo "PRESENT=false" >> "$GITHUB_ENV"
-          echo "PRESENT=false" >> "$GITHUB_OUTPUT"
         fi
 
     - name: "Set key to use for JSON lookup"
@@ -72,13 +69,23 @@ runs:
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure@main
 
-    - name: "Add JIRA ticket to commit message"
+    - name: "Adding JIRA ticket reference to commit message"
       id: inject
-      if: env.PRESENT == 'false' && inputs.INJECT == 'true'
+      # yamllint disable-line rule:line-length
+      if: env.PRESENT == 'false' && inputs.INJECT == 'true' && (github.event.pull_request.head.ref != github.ref_name) && (github.event.pull_request.head.ref != github.event.pull_request.base.ref)
       shell: bash
       run: |
-        # Add JIRA ticket to commit message
-        git commit --amend -m "${{ env.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
-        echo "Force push update on this pull request ⚠️"
+        # Adding JIRA ticket reference to commit message
+        git commit --amend -m "${{ inputs.COMMIT_MESSAGE_BODY }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
+        echo "Performing force push on pull request ⚠️"
         git push --force
-        echo "present=true" >> "$GITHUB_OUTPUT"
+        echo "present=true" >> "$GITHUB_ENV"
+        echo "Added JIRA ticket reference: ${{ env.value }} 🎟️"
+        echo "🎟️ Added JIRA ticket reference: ${{ env.value }}" >> "$GITHUB_STEP_SUMMARY"
+
+    - name: "Set status/outputs"
+      id: output
+      shell: bash
+      run: |
+        # Set status/outputs
+        echo "present=${{ env.present }}" >> "$GITHUB_OUTPUT"
