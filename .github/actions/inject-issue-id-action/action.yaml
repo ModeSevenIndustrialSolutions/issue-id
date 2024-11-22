@@ -36,7 +36,7 @@ runs:
       shell: bash
       run: |
         # Check commit message for required string
-        COMMIT_MESSAGE="${{ env.COMMIT_MESSAGE_BODY }}"
+        COMMIT_MESSAGE="${{ env.COMMIT_MESSAGE }}"
         if [ -z "$COMMIT_MESSAGE" ]; then
           echo "Commit message body was empty/unpopulated ❌"; exit 1
         fi
