@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2024 The Linux Foundation
 
-name: "🏷️ Check/Inject Issue-ID"
+name: "🏷️ Add JIRA ticket to commit message"
 
 inputs:
   # Required
   ISSUE_ID_LOOKUP_JSON:
-    description: "JSON lookup table mapping users to JIRA tickets"
+    description: "JSON mapping users to JIRA tickets"
     type: string
     required: true
   # Optional
@@ -21,7 +21,7 @@ inputs:
 
 outputs:
   PRESENT:
-    description: "Whether the Issue-ID string is present"
+    description: "Whether the required ticket string is present"
     value: ${{ steps.fetch.outputs.count }}
 
 runs:
@@ -42,26 +42,26 @@ runs:
           echo "Commit message body was empty/unpopulated ❌"; exit 1
         fi
         if [[ "$COMMIT_MESSAGE" =~ "Issue-ID: " ]]; then
-          echo "Issue-ID was found in the pull request ✅"
+          echo "Ticket found in the pull request ✅"
           echo "PRESENT=true" >> "$GITHUB_ENV"
           echo "PRESENT=true" >> "$GITHUB_OUTPUT"
         else
-          echo "Issue-ID was NOT found in the pull request 💬"
+          echo "Ticket NOT found in the pull request 💬"
           echo "PRESENT=false" >> "$GITHUB_ENV"
           echo "PRESENT=false" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: "Identifying key for Issue-ID lookup"
+    - name: "Set key to use for JSON lookup"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       shell: bash
       run: |
-        # Identifying key for Issue-ID lookup
+        # Set key to use for JSON lookup
         ACTOR="${{ github.actor }}"
         ACTOR_ID="${{ github.actor_id }}"
-        echo "Using GitHub actor as key: $ACTOR [$ACTOR_ID]"
+        echo "Using GitHub actor as lookup key: $ACTOR [$ACTOR_ID] 🔑"
         echo "key=$ACTOR" >> "$GITHUB_ENV"
 
-    - name: "Get Issue-ID from JSON lookup table"
+    - name: "Get ticket from JSON lookup table"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/json-var-key-value-lookup@main
       with:
@@ -72,14 +72,13 @@ runs:
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure@main
 
-    - name: "Injecting Issue-ID into body of first commit message"
+    - name: "Add JIRA ticket to commit message"
       id: inject
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
       shell: bash
       run: |
-        # Injecting Issue-ID into body of first commit
-
-        git commit --amend -m "${{ env.COMMIT_MESSAGE }} -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
+        # Add JIRA ticket to commit message
+        git commit --amend -m "${{ env.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
         echo "Force push temporarily disabled ⚠️"
         # git push --force
         echo "present=true" >> "$GITHUB_OUTPUT"
