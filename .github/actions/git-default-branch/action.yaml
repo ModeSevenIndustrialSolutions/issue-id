@@ -24,6 +24,8 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v4
+
     - name: "Get GIT default branch for repository"
       id: branch
       shell: bash
