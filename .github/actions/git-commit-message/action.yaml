@@ -4,16 +4,6 @@
 
 name: "💬 GIT Commit Message"
 
-inputs:
-  REF:
-    description: "GIT ref to checkout"
-    required: false
-    default: ${{ github.head_ref }}
-  FETCH_DEPTH:
-    description: "Fetch depth to checkout"
-    required: false
-    default: 0
-
 outputs:
   COMMIT_MESSAGE:
     description: "GIT commit message"
@@ -22,12 +12,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.REF }}
-        fetch-depth: ${{ inputs.FETCH_DEPTH }}
-
     - name: "Retrieve GIT commit message"
       id: return
       shell: bash

@@ -32,7 +32,7 @@ runs:
 
         #SHELLCODESTART
 
-        set -o pipefail
+        set -xv
 
         # Allows for testing from a local shell
         if [ -z "$GITHUB_OUTPUT" ]; then
