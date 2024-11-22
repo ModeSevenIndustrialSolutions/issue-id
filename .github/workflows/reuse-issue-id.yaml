@@ -28,9 +28,10 @@ jobs:
       - name: "Enumerate default branch"
         uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-default-branch@main
 
-      - shell: bash
+      - name: "Debugging the environment"
+        shell: bash
         run: |
-          # Report useful values
+          # Debugging the environment
           echo "ref: ${{ github.ref }}"
           echo "workflow_ref: ${{ github.workflow_ref }}"
           # Don't run if:

@@ -29,6 +29,7 @@ runs:
   steps:
     # No need to checkout repository, performed by first action below
     - name: "GIT commit message body"
+      id: commit-message
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message@main
 
     - name: "Check commit message for required string"
@@ -78,7 +79,7 @@ runs:
       run: |
         # Injecting Issue-ID into body of first commit
 
-        git commit --amend -m "${{ inputs.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
+        git commit --amend -m "${{ env.COMMIT_MESSAGE }} -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
         echo "Force push temporarily disabled ⚠️"
         # git push --force
         echo "present=true" >> "$GITHUB_OUTPUT"
