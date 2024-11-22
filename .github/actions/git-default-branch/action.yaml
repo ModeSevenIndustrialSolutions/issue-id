@@ -24,6 +24,7 @@ runs:
           echo "Default branch value was NOT populated ❌"; exit 1
         fi
         echo "Repository default branch: $DEFAULT_BRANCH ✅" >> "$GITHUB_STEP_SUMMARY"
+        echo "Repository default branch: $DEFAULT_BRANCH ✅"
 
         if [ -n "${{ github.ref_name }}" ];then
           echo "github.ref_name: ${{ github.ref_name }}"
