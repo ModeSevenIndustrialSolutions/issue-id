@@ -17,7 +17,7 @@ runs:
       shell: bash
       run: |
         # Retrieve GIT commit message
-        using "Pulled repository with ref: ${{ inputs.REF }} and depth ${{ inputs.FETCH_DEPTH }}"
+        echo "Pulled repository with ref: ${{ inputs.REF }} and depth ${{ inputs.FETCH_DEPTH }}"
         COMMIT_MESSAGE=$(git show -s --format='%B')
         if [ -z "$COMMIT_MESSAGE" ]; then
           echo "GIT Commit Message string was empty ❌" >> "$GITHUB_STEP_SUMMARY"
