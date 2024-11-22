@@ -2,84 +2,39 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2024 The Linux Foundation
 
-name: "🛠️ Configure GIT"
-
-inputs:
-  METHOD:
-    description: "Method to enumerate default branch"
-    type: string
-    required: false
-    default: "rev-parse"
-  REMOTE:
-    # Not always used, depends on the method type
-    description: "Remote to enumerate default branch"
-    type: string
-    required: false
-    default: "origin"
+name: "🛠️ Get default GIT branch"
 
 outputs:
   DEFAULT_BRANCH:
-    description: "Default branch name of current repository"
+    description: "Default branch name of repository"
+  EVENT_REF_MATCHES:
+    description: "True when github.event.repository.default_branch = github.event.ref_name"
 
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-
-    - name: "Get GIT default branch for repository"
-      id: branch
+    - name: "Get repository default GIT branch"
       shell: bash
       run: |
-        # Get GIT default branch for repository
-
-        #SHELLCODESTART
-
-        set -xv
-
-        git remote -v
-        git branch -l
-
-        # Allows for testing from a local shell
-        if [ -z "$GITHUB_OUTPUT" ]; then
-          echo "Running from a shell, NOT workflow"
-          export GITHUB_STEP_SUMMARY="/dev/null"
-          export GITHUB_OUTPUT="/dev/null"
-          export GITHUB_ENV="/dev/null"
-          if [ $# -ne 1 ] && [ $# -ne 2 ]; then
-            echo "Error: invalid arguments specified"
-            echo "Usage:  $0 [method] [remote]"; exit 1
-          else
-            METHOD="$1"
-            REMOTE="$2"
-          fi
+        # Get repository default GIT branch
+        DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+        EVENT_REF_NAME="${{ github.event.ref_name }}"
+        if [ -z "$DEFAULT_BRANCH" ] || [ -z "$EVENT_REF_NAME" ]; then
+          echo "Expected values were NOT populated ❌"; exit 1
+        fi
+        echo "Repository default branch: $DEFAULT_BRANCH ✅" >> "$GITHUB_STEP_SUMMARY"
+        echo "Repository default branch: $DEFAULT_BRANCH ✅"
+        if [ "$DEFAULT_BRANCH" = "$EVENT_REF_NAME" ]; then
+          EVENT_REF_MATCHES="true"
+          echo "GitHub event ref name: $EVENT_REF_NAME ✅" >> "$GITHUB_STEP_SUMMARY"
+          echo "GitHub event ref name: $EVENT_REF_NAME ✅"
         else
-          METHOD="${{ inputs.METHOD }}"
-          REMOTE="${{ inputs.REMOTE }}"
+          EVENT_REF_MATCHES="false"
+          echo "GitHub event ref name: $EVENT_REF_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "GitHub event ref name: $EVENT_REF_NAME"
         fi
-
-        # Needed when invoked from test/wrapper script
-        if [ -z "$REMOTE" ]; then
-          REMOTE="origin"
-        fi
-
-        if [ "$METHOD" = "rev-parse" ]; then
-          DEFAULT_BRANCH=$(basename $(git rev-parse --abbrev-ref $REMOTE/HEAD))
-        elif [ "$METHOD" = "git-config" ]; then
-          DEFAULT_BRANCH=$(git config --get init.defaultBranch)
-        elif [ "$METHOD" = "git-remote" ]; then
-          # This is a slower lookup as it makes a network call
-          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-        else
-          echo "Invalid method specified ❌"; exit 1
-        fi
-
-        # Return result
-        if [ -z "$DEFAULT_BRANCH" ]; then
-          echo "Empty value returned for default branch ❌"; exit 1
-        fi
-        echo "Default branch for current repository: $DEFAULT_BRANCH ✅" >> "$GITHUB_STEP_SUMMARY"
-        echo "Default branch for current repository: $DEFAULT_BRANCH ✅"
+        # Return results
         echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_ENV"
         echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
-
-        #SHELLCODEEND
+        echo "event_ref_matches=$EVENT_REF_MATCHES" >> "$GITHUB_ENV"
+        echo "event_ref_matches=$EVENT_REF_MATCHES" >> "$GITHUB_OUTPUT"
