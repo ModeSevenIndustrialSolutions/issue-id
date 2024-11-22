@@ -7,8 +7,6 @@ name: "🛠️ Get default GIT branch"
 outputs:
   DEFAULT_BRANCH:
     description: "Default branch name of repository"
-  EVENT_REF_MATCHES:
-    description: "True when github.event.repository.default_branch = github.event.ref_name"
 
 runs:
   using: "composite"
@@ -26,25 +24,23 @@ runs:
           echo "Default branch value was NOT populated ❌"; exit 1
         fi
         echo "Repository default branch: $DEFAULT_BRANCH ✅" >> "$GITHUB_STEP_SUMMARY"
-        echo "Repository default branch: $DEFAULT_BRANCH ✅"
-        if [ "$DEFAULT_BRANCH" = "$EVENT_REF_NAME" ]; then
-          EVENT_REF_MATCHES="true"
-          echo "GitHub event ref name: $EVENT_REF_NAME ✅" >> "$GITHUB_STEP_SUMMARY"
-          echo "GitHub event ref name: $EVENT_REF_NAME ✅"
-        elif [ -n "$EVENT_REF_NAME" ]; then
-          EVENT_REF_MATCHES="false"
-          echo "GitHub event ref name: $EVENT_REF_NAME" >> "$GITHUB_STEP_SUMMARY"
-          echo "GitHub event ref name: $EVENT_REF_NAME"
-        fi
 
-        echo "github.ref_name: ${{ github.ref_name }}"
-        echo "github.event.ref_name: ${{ github.event.ref_name }}"
-        echo "github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}"
-        echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
-        echo "github.event.release.tag_name: ${{ github.event.release.tag_name }}"
+        if [ -n "${{ github.ref_name }}" ];then
+          echo "github.ref_name: ${{ github.ref_name }}"
+        fi
+        if [ -n "${{ github.event.ref_name }}" ];then
+          echo "github.event.ref_name: ${{ github.event.ref_name }}"
+        fi
+        if [ -n "${{ github.event.pull_request.head.ref }}" ];then
+          echo "github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}"
+        fi
+        if [ -n "${{ github.event.pull_request.base.ref }}" ];then
+          echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
+        fi
+        if [ -n "${{ github.event.release.tag_name }}" ];then
+         echo "github.event.release.tag_name: ${{ github.event.release.tag_name }}"
+        fi
 
         # Return results
         echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_ENV"
         echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
-        echo "event_ref_matches=$EVENT_REF_MATCHES" >> "$GITHUB_ENV"
-        echo "event_ref_matches=$EVENT_REF_MATCHES" >> "$GITHUB_OUTPUT"
