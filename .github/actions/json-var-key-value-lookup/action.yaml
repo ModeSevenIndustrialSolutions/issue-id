@@ -31,7 +31,8 @@ runs:
         JSON="${{ inputs.json }}"
         # Validate the variable is not empty/unset
         if [ -z "$JSON" ]; then
-          echo "Error: The required lookup variable/JSON was NOT passed as input"; exit 1
+          echo "The required lookup variable/JSON was NOT passed as input ❌"
+          exit 1
         fi
 
         echo "Looking up value for: ${{ inputs.key }}"
@@ -44,9 +45,9 @@ runs:
             jq -r --arg KEY "$KEY" '.[] | select(.key==$KEY) | .value')
 
           if [ -z "$VALUE" ]; then
-            echo "❌ Key/value lookup failed"; exit 1
+            echo "Key/value lookup failed ❌"; exit 1
           fi
-          echo "✅ Value returned: $VALUE"
+          echo "Value returned: $VALUE ✅"
         else
           echo "Error: jq command was NOT found in the PATH"; exit 1
         fi

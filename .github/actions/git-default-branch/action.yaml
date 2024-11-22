@@ -1,0 +1,80 @@
+---
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2024 The Linux Foundation
+
+name: "🛠️ Configure GIT"
+
+inputs:
+  METHOD:
+    description: "Method to enumerate default branch"
+    type: string
+    required: false
+    default: "git-config"
+  REMOTE:
+    # Not always used, depends on the method type
+    description: "Remote to enumerate default branch"
+    type: string
+    required: false
+    default: "origin"
+
+outputs:
+  DEFAULT_BRANCH:
+    description: "Default branch name of current repository"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Get GIT default branch for repository"
+      id: branch
+      shell: bash
+      run: |
+        # Get GIT default branch for repository
+
+        #SHELLCODESTART
+
+        set -o pipefail
+
+        # Allows for testing from a local shell
+        if [ -z "$GITHUB_OUTPUT" ]; then
+          echo "Running from a shell, NOT workflow"
+          export GITHUB_STEP_SUMMARY="/dev/null"
+          export GITHUB_OUTPUT="/dev/null"
+          export GITHUB_ENV="/dev/null"
+          if [ $# -ne 1 ] && [ $# -ne 2 ]; then
+            echo "Error: invalid arguments specified"
+            echo "Usage:  $0 [method] [remote]"; exit 1
+          else
+            METHOD="$1"
+            REMOTE="$2"
+          fi
+        else
+          METHOD="${{ inputs.METHOD }}"
+          REMOTE="${{ inputs.REMOTE }}"
+        fi
+
+        # Needed when invoked from test/wrapper script
+        if [ -z "$REMOTE" ]; then
+          REMOTE="origin"
+        fi
+
+        if [ "$METHOD" = "git-config" ]; then
+          DEFAULT_BRANCH=$(git config --get init.defaultBranch)
+        elif [ "$METHOD" = "rev-parse" ]; then
+          DEFAULT_BRANCH=$(basename $(git rev-parse --abbrev-ref $REMOTE/HEAD))
+        elif [ "$METHOD" = "git-remote" ]; then
+          # This is a slower lookup as it makes a network call
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+        else
+          echo "Invalid method specified ❌"; exit 1
+        fi
+
+        # Return result
+        if [ -z "$DEFAULT_BRANCH" ]; then
+          echo "Empty value returned for default branch ❌"; exit 1
+        fi
+        echo "Default branch for current repository: $DEFAULT_BRANCH ✅" >> "$GITHUB_STEP_SUMMARY"
+        echo "Default branch for current repository: $DEFAULT_BRANCH ✅"
+        echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_ENV"
+        echo "default_branch=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
+
+        #SHELLCODEEND
