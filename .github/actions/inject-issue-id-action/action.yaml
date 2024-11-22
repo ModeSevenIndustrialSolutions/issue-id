@@ -28,25 +28,25 @@ runs:
   using: "composite"
   steps:
     # No need to checkout repository, performed by first action below
-    - name: "GIT commit message body"
+    - name: "Get GIT commit message body"
       id: commit-message
       uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message@main
 
-    - name: "Check commit message for required string"
+    - name: "Check commit message for ticket/string"
       id: check
       shell: bash
       run: |
-        # Check commit message for required string
+        # Check commit message for ticket/string
         COMMIT_MESSAGE="${{ env.COMMIT_MESSAGE }}"
         if [ -z "$COMMIT_MESSAGE" ]; then
           echo "Commit message body was empty/unpopulated ❌"; exit 1
         fi
         if [[ "$COMMIT_MESSAGE" =~ "Issue-ID: " ]]; then
-          echo "Ticket found in the pull request ✅"
+          echo "Ticket string found in the pull request ✅"
           echo "PRESENT=true" >> "$GITHUB_ENV"
           echo "PRESENT=true" >> "$GITHUB_OUTPUT"
         else
-          echo "Ticket NOT found in the pull request 💬"
+          echo "Ticket string NOT found in the pull request 💬"
           echo "PRESENT=false" >> "$GITHUB_ENV"
           echo "PRESENT=false" >> "$GITHUB_OUTPUT"
         fi
@@ -79,6 +79,6 @@ runs:
       run: |
         # Add JIRA ticket to commit message
         git commit --amend -m "${{ env.COMMIT_MESSAGE }}" -m "Issue-ID: ${{ env.value }}" --no-verify --no-edit
-        echo "Force push temporarily disabled ⚠️"
-        # git push --force
+        echo "Force push update on this pull request ⚠️"
+        git push --force
         echo "present=true" >> "$GITHUB_OUTPUT"
