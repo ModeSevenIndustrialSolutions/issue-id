@@ -9,10 +9,6 @@ name: "🎟️ [R] Issue-ID"
 on:
   workflow_call:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.run_id }}
-  cancel-in-progress: true
-
 permissions: {}
 
 jobs:
@@ -23,12 +19,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-
       - name: "Check/Add commit message JIRA ticket"
         # yamllint disable-line rule:line-length
         uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/inject-issue-id-action@main
