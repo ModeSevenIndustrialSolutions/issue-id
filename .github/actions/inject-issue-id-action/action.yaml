@@ -2,15 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2024 The Linux Foundation
 
-name: "🏷️ Add JIRA ticket to commit message"
+name: "🎟️ Add JIRA ticket to commit message"
 
 inputs:
-  # Required
   ISSUE_ID_LOOKUP_JSON:
     description: "JSON mapping users to JIRA tickets"
     type: string
     required: true
-  # Optional
   INJECT:
     # When injection is enabled and no issue found...
     # String will be added, output variable set true
