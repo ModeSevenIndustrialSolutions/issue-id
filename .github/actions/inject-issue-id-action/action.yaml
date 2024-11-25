@@ -27,10 +27,15 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # No need to checkout repository, performed by first action below
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
+
     - name: "Get GIT commit message body"
       id: commit-message
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message-action@main
 
     - name: "Check commit message for ticket/string"
       shell: bash
@@ -64,14 +69,14 @@ runs:
 
     - name: "Get ticket from JSON lookup table"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/json-var-key-value-lookup@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/json-key-value-lookup-action@main
       with:
         json: ${{ inputs.issue_id_lookup_json }}
         key: ${{ env.key }}
 
     - name: "Configure GIT user for commit"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure@main
+      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure-action@main
 
     - name: "Adding JIRA ticket reference to commit message"
       id: inject
