@@ -88,7 +88,7 @@ runs:
         git push --force
         echo "present=true" >> "$GITHUB_ENV"
         echo "Added JIRA ticket reference: ${{ env.value }} 🎟️"
-        echo "# 🎟️ Added JIRA ticket reference: ${{ env.value }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "## 🎟️ Added JIRA ticket reference: ${{ env.value }}" >> "$GITHUB_STEP_SUMMARY"
 
     - name: "Set status/outputs"
       id: status
