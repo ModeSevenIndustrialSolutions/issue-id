@@ -22,11 +22,12 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: "Fetch value for key from JSON lookup table"
+    - name: "JSON Variable Key/Value Lookup"
       id: lookup
       shell: bash
       run: |
-        # Fetch value for key from JSON lookup table
+        # JSON Variable Key/Value Lookup
+        echo "### 🔑 JSON Variable Key/Value Lookup" >> "$GITHUB_STEP_SUMMARY"
 
         JSON="${{ inputs.json }}"
         # Validate the variable is not empty/unset
@@ -53,5 +54,5 @@ runs:
         fi
         echo "value=$VALUE" >> "$GITHUB_ENV"
         echo "value=$VALUE" >> "$GITHUB_OUTPUT"
-        echo "🔑 Key to lookup: ${{ inputs.key }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "💬 Value returned: $VALUE" >> "$GITHUB_STEP_SUMMARY"
+        echo "Key to lookup: ${{ inputs.key }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "Value returned: $VALUE" >> "$GITHUB_STEP_SUMMARY"
