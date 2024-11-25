@@ -26,9 +26,9 @@ runs:
         # Configure GIT user
         git config user.name "${{ inputs.COMMIT_USER_NAME }}"
         git config user.email "${{ inputs.COMMIT_USER_EMAIL }}"
-        echo "🛠️ GIT User Configuration"
+        echo "🛠️ Configure GIT User"
         echo "User name: ${{ inputs.COMMIT_USER_NAME }}"
         echo "User email: ${{ inputs.COMMIT_USER_EMAIL }}"
-        echo "### 🛠️ GIT User Configuration" >> "$GITHUB_STEP_SUMMARY"
+        echo "### 🛠️ Configure GIT User" >> "$GITHUB_STEP_SUMMARY"
         echo "User name: ${{ inputs.COMMIT_USER_NAME }}" >> "$GITHUB_STEP_SUMMARY"
         echo "User email: ${{ inputs.COMMIT_USER_EMAIL }}" >> "$GITHUB_STEP_SUMMARY"
