@@ -30,5 +30,7 @@ runs:
         echo "User name: ${{ inputs.COMMIT_USER_NAME }}"
         echo "User email: ${{ inputs.COMMIT_USER_EMAIL }}"
         echo "### 🛠️ Configure GIT User" >> "$GITHUB_STEP_SUMMARY"
-        echo "User name: ${{ inputs.COMMIT_USER_NAME }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "User email: ${{ inputs.COMMIT_USER_EMAIL }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "User name: ${{ inputs.COMMIT_USER_NAME }}" >> \
+          "$GITHUB_STEP_SUMMARY"
+        echo "User email: ${{ inputs.COMMIT_USER_EMAIL }}" >> \
+          "$GITHUB_STEP_SUMMARY"
