@@ -27,9 +27,6 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref }}
-        fetch-depth: 0
 
     - name: "Get GIT commit message body"
       id: commit-message
