@@ -40,9 +40,11 @@ runs:
 
         # Validate that input variables are populated
         if [ -z "${{ inputs.json }}" ]; then
-          echo "Error: the required variable/JSON string was NOT passed as input ❌"; exit 1
+          echo "Error: variable/JSON string was NOT passed as input ❌"
+          exit 1
         elif [ -z "$KEY" ]; then
-          echo "Error: the required key to lookup was NOT passed as input ❌"; exit 1
+          echo "Error: required lookup key was NOT passed as input ❌"
+          exit 1
         fi
 
         # Ensure JSON parser/binary is available
