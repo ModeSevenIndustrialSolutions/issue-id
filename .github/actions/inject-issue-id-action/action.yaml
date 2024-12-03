@@ -33,7 +33,7 @@ runs:
     - name: "Get GIT commit message body"
       id: commit-message
       # yamllint disable rule:line-length
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-commit-message-action@main
+      uses: lfit/releng-reusable-workflows/.github/actions/git-commit-message-action@main
 
     - name: "Check commit message for ticket/string"
       shell: bash
@@ -67,15 +67,14 @@ runs:
 
     - name: "Get ticket from JSON lookup table"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/json-key-value-lookup-action@main
+      uses: lfit/releng-reusable-workflows/.github/actions/json-key-value-lookup-action@main
       with:
         json: ${{ inputs.issue_id_lookup_json }}
         key: ${{ env.key }}
-        default: "CIMAN-101"
 
     - name: "Configure GIT user for commit"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
-      uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/git-configure-action@main
+      uses: lfit/releng-reusable-workflows/.github/actions/git-configure-action@main
 
     - name: "Adding JIRA ticket reference to commit message"
       id: inject
