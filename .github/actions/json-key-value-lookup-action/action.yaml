@@ -34,8 +34,6 @@ runs:
         # JSON Variable Key/Value Lookup
 
         echo "### 🔑 JSON Variable Key/Value Lookup" >> "$GITHUB_STEP_SUMMARY"
-        JSON="${{ inputs.json }}"
-        KEY="${{ inputs.KEY }}"
 
         # Validate that input variables are populated
         if [ -z "$JSON" ]; then
@@ -43,6 +41,9 @@ runs:
         elif [ -z "$KEY" ]; then
           echo "Error: the required key to lookup was NOT passed as input ❌"; exit 1
         fi
+        JSON="${{ inputs.json }}"
+        KEY="${{ inputs.key }}"
+        DEFAULT="${{ inputs.default }}"
 
         # Ensure JSON parser/binary is available
         JQ=$(which jq || true)
@@ -69,7 +70,7 @@ runs:
           echo "Key/value lookup failed ❌"; exit 1
         elif [ -z "$VALUE" ]; then
           echo "Key/value lookup failed ⚠️"
-          VALUE="${{ inputs.default }}"
+          VALUE="$DEFAULT"
         fi
 
         echo "Returning value: $VALUE 💬"
