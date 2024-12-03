@@ -71,7 +71,6 @@ runs:
       with:
         json: ${{ inputs.issue_id_lookup_json }}
         key: ${{ env.key }}
-        default: "CIMAN-101"
 
     - name: "Configure GIT user for commit"
       if: env.PRESENT == 'false' && inputs.INJECT == 'true'
