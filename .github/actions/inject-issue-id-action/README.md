@@ -1,6 +1,11 @@
-# 🎟️ Add JIRA ticket/issue to commit message body
+<!--
+[comment]: # SPDX-License-Identifier: Apache-2.0
+[comment]: # SPDX-FileCopyrightText: 2024 The Linux Foundation
+-->
 
-Action to add a JIRA ticket/Issue-ID line to the body of a commit message.
+# 🎟️ Add issue tracker to commit message body
+
+Action to add a issue tracker reference to the body of a commit message.
 
 ## inject-issue-id-action
 
@@ -11,8 +16,8 @@ or by passing in the contents of a variable (set either at the repository or
 organisation level).
 
 ```yaml
-- name: "Check/Add commit message JIRA ticket"
-  uses: ModeSevenIndustrialSolutions/issue-id/.github/actions/inject-issue-id-action@main
+- name: "Check/Add commit message issue tracker reference"
+  uses: lfit/releng-reusable-workflows/.github/actions/inject-issue-id-action@main
   with:
     issue_id_lookup_json: ${{ vars.ISSUE_ID_LOOKUP_JSON }}
 ```
@@ -30,10 +35,11 @@ The action does not have any default values and both input parameters are mandat
 
 <!-- markdownlint-disable MD013 -->
 
-| Variable Name        | Required | Default | Description                         |
-| -------------------- | -------- | ------- | ----------------------------------- |
-| ISSUE_ID_LOOKUP_JSON | True     | N/A     | JSON array of key/value pairs       |
-| INJECT               | False    | True    | When set false, checks for presence |
+| Variable Name        | Required | Default     | Description                           |
+| -------------------- | -------- | ----------- | ------------------------------------- |
+| ISSUE_ID_LOOKUP_JSON | True     | N/A         | JSON array of key/value pairs         |
+| ISSUE_STRING         | False    | "Issue-ID:" | Fixed preamble/string to embed/inject |
+| INJECT               | False    | True        | When set false, checks for presence   |
 
 <!-- markdownlint-enable MD013 -->
 
@@ -45,16 +51,11 @@ The action does not have any default values and both input parameters are mandat
 
 ## Limitations
 
-This action uses ${{ github.actor }} as the key to lookup, but also reports
-the ${{ github.actor_id }}, which is a GitHub facsimile to the UNIX concept
-of a UID value.
+This action uses `${{ github.actor }}` as the key to lookup, but also
+reports the `${{ github.actor_id }}`, which is a GitHub facsimile to
+the UNIX concept of a UID value.
 
 ## Future Enhancements
 
 It may be desirable to use other GitHub parameters as keys in the JSON
 value/lookup.
-
-<!--
-[comment]: # SPDX-License-Identifier: Apache-2.0
-[comment]: # SPDX-FileCopyrightText: 2024 The Linux Foundation
--->
